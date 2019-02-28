@@ -75,6 +75,8 @@ BEGIN_MESSAGE_MAP(CfileparserudacityDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_FILE_CHECK4, &CfileparserudacityDlg::OnBnClickedButtonFileCheck4)
 	ON_BN_CLICKED(IDC_BUTTON_FILE_TEST, &CfileparserudacityDlg::OnBnClickedButtonFileTest)
 	ON_BN_CLICKED(IDC_BUTTON_FILE_TEST2, &CfileparserudacityDlg::OnBnClickedButtonFileTest2)
+	ON_BN_CLICKED(IDC_BUTTON_FILE_TEST3, &CfileparserudacityDlg::OnBnClickedButtonFileTest3)
+	ON_BN_CLICKED(IDC_BUTTON_FILE_TEST4, &CfileparserudacityDlg::OnBnClickedButtonFileTest4)
 END_MESSAGE_MAP()
 
 
@@ -713,6 +715,176 @@ void CfileparserudacityDlg::OnBnClickedButtonFileTest2()
 	
 	jp::setPutText(cvmat, "딧스이즈 한글 ", cvPoint(10, 10), CV_RGB(255, 0, 0), CV_RGB(0, 255, 0), 100);
 	cv::imshow("cvmat", cvmat);
-	cvReleaseImage(&t);
+	cvReleaseImage(&t);	
 
 }
+
+
+void CfileparserudacityDlg::OnBnClickedButtonFileTest3()
+{
+	OnBnClickedButtonFileTest4();
+
+
+#if(1)
+	CWnd * hw1 = FindWindow(NULL, "안종필");  // 대화방의 이름이 안종필임.
+	CWnd * hw2 = FindWindowEx(hw1->m_hWnd, 0, "RichEdit20W", NULL); //카톡editbox이름 - 모두 동일함
+	
+	//::SendMessage(hw2->m_hWnd, 0x000c, 0, (LPARAM)"asdf");	
+
+	
+	//::PostMessage(hw2->m_hWnd, WM_PASTE, 0, 0);
+	//hw2->ShowWindow(SW_HIDE);
+	//::ShowWindow(hw1->m_hWnd, SW_SHOW);
+	
+	::SetForegroundWindow(hw2->m_hWnd);
+	keybd_event(VK_CONTROL, 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event('V', 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event('V', 0, 2, 0); //키가 눌려짐(UP)
+	keybd_event(VK_CONTROL, 0, 2, 0); //키가 올라옴(UP)
+	
+	keybd_event(VK_RETURN, 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event(VK_RETURN, 0, 2, 0); //키가 올라옴(UP)
+	
+	//::PostMessage(hw2->m_hWnd, WM_KEYDOWN, VK_RETURN, NULL);//enter
+	//::PostMessage(hw2->m_hWnd, WM_KEYUP, VK_RETURN, NULL);//enter
+	//::SendMessage(hw2->m_hWnd, 0x0100, 0xD, 0x1C001);//enter
+	//::PostMessage(hw2->m_hWnd, WM_KEYDOWN, VK_CONTROL, NULL);
+	//::PostMessage(hw2->m_hWnd, WM_KEYDOWN, VK_CONTROL, NULL);
+	//::PostMessage(hw2->m_hWnd, WM_KEYDOWN, VkKeyScan('v'), NULL);
+	//::PostMessage(hw2->m_hWnd, WM_KEYUP, VkKeyScan('v'), NULL);
+	//::PostMessage(hw2->m_hWnd, WM_PASTE, VkKeyScan('v'), NULL);
+	//::PostMessage(hw2->m_hWnd, WM_KEYUP, VK_CONTROL, NULL);//
+	//::PostMessage(hw2->m_hWnd, 0x0100, 0xD, 0x1C001);//enter
+#endif
+
+
+	//::ShowWindow(hw1->m_hWnd, SW_HIDE);	
+}
+
+
+
+
+
+auto CfileparserudacityDlg::ConvertCVMatToBMP(cv::Mat frame)
+{
+	auto convertOpenCVBitDepthToBits = [](const int32_t value)
+	{
+		auto regular = 0u;
+
+		switch (value)
+		{
+		case CV_8U:
+		case CV_8S:
+			regular = 8u;
+			break;
+
+		case CV_16U:
+		case CV_16S:
+			regular = 16u;
+			break;
+
+		case CV_32S:
+		case CV_32F:
+			regular = 32u;
+			break;
+
+		case CV_64F:
+			regular = 64u;
+			break;
+
+		default:
+			regular = 0u;
+			break;
+		}
+
+		return regular;
+	};
+
+	auto imageSize = frame.size();
+	assert(imageSize.width && "invalid size provided by frame");
+	assert(imageSize.height && "invalid size provided by frame");
+
+	if (imageSize.width && imageSize.height)
+	{
+		auto headerInfo = BITMAPINFOHEADER{};
+		ZeroMemory(&headerInfo, sizeof(headerInfo));
+
+		headerInfo.biSize = sizeof(headerInfo);
+		headerInfo.biWidth = imageSize.width;
+		headerInfo.biHeight = -(imageSize.height); // negative otherwise it will be upsidedown
+		headerInfo.biPlanes = 1;// must be set to 1 as per documentation frame.channels();
+
+		const auto bits = convertOpenCVBitDepthToBits(frame.depth());
+		headerInfo.biBitCount = frame.channels() * bits;
+
+		auto bitmapInfo = BITMAPINFO{};
+		ZeroMemory(&bitmapInfo, sizeof(bitmapInfo));
+
+		bitmapInfo.bmiHeader = headerInfo;
+		bitmapInfo.bmiColors->rgbBlue = 0;
+		bitmapInfo.bmiColors->rgbGreen = 0;
+		bitmapInfo.bmiColors->rgbRed = 0;
+		bitmapInfo.bmiColors->rgbReserved = 0;
+
+		auto dc = GetDC();
+		assert(dc != NULL && "Failure to get DC");
+		auto bmp = CreateDIBitmap(dc->m_hDC,
+			&headerInfo,
+			CBM_INIT,
+			frame.data,
+			&bitmapInfo,
+			DIB_RGB_COLORS);
+		assert(bmp != nullptr && "Failure creating bitmap from captured frame");
+
+		return bmp;
+	}
+	else
+	{
+		HBITMAP a = NULL;
+
+		return a;
+	}
+}
+
+auto CfileparserudacityDlg::PasteBMPToClipboard(void * bmp)
+{
+	assert(bmp != NULL && "You need a bmp for this function to work");
+
+	if (OpenClipboard() && bmp != NULL)
+	{
+		EmptyClipboard();
+		SetClipboardData(CF_BITMAP, bmp);
+		CloseClipboard();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int choiceCnt = 0;
+void CfileparserudacityDlg::OnBnClickedButtonFileTest4()
+{
+	cv::Mat cvmat;
+	if (choiceCnt % 2)
+	{
+		cvmat = cv::imread("d:\\11.jpg");
+	}
+	else
+	{
+		cvmat = cv::imread("d:\\22.jpg");
+	}
+
+	auto bmp = ConvertCVMatToBMP(cvmat);
+	if (bmp)
+	{
+		auto pasteResult = PasteBMPToClipboard(bmp);
+		DeleteObject(bmp);
+		bmp = NULL;
+	}
+	choiceCnt++;
+
+
+}
+

@@ -19,6 +19,8 @@
 #define IDC_BUTTON_FILE_CHECK4          1008
 #define IDC_BUTTON_FILE_TEST            1009
 #define IDC_BUTTON_FILE_TEST2           1010
+#define IDC_BUTTON_FILE_TEST3           1011
+#define IDC_BUTTON_FILE_TEST4           1012
 
 // Next default values for new objects
 // 

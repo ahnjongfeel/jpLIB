@@ -5,6 +5,7 @@
 #pragma once
 #include "jpLib.h"
 #include <vector>
+#include <cassert>
 class CNames
 {
 public:
@@ -180,4 +181,11 @@ public:
 	afx_msg void OnBnClickedButtonFileCheck4();
 	afx_msg void OnBnClickedButtonFileTest();
 	afx_msg void OnBnClickedButtonFileTest2();
+	afx_msg void OnBnClickedButtonFileTest3();
+	afx_msg void OnBnClickedButtonFileTest4();
+	auto ConvertCVMatToBMP(cv::Mat frame);
+	auto PasteBMPToClipboard(void* bmp);
+
+
+
 };
