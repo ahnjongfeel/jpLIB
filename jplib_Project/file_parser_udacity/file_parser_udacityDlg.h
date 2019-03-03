@@ -183,8 +183,8 @@ public:
 	afx_msg void OnBnClickedButtonFileTest2();
 	afx_msg void OnBnClickedButtonFileTest3();
 	afx_msg void OnBnClickedButtonFileTest4();
-	auto ConvertCVMatToBMP(cv::Mat frame);
-	auto PasteBMPToClipboard(void* bmp);
+	HBITMAP ConvertCVMatToBMP(cv::Mat frame);
+	bool PasteBMPToClipboard(void* bmp);
 
 
 

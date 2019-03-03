@@ -724,8 +724,20 @@ void CfileparserudacityDlg::OnBnClickedButtonFileTest3()
 {
 	OnBnClickedButtonFileTest4();
 
+	HWND hw1 = FindWindowW(NULL, L"안종필");  // 대화방의 이름이 안종필임.
+	HWND hw2 = FindWindowExW(hw1, 0, L"RichEdit20W", NULL); //카톡editbox이름 - 모두 동일함
+	::SetForegroundWindow(hw2);
+	keybd_event(VK_CONTROL, 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event('V', 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event('V', 0, 2, 0); //키가 눌려짐(UP)
+	keybd_event(VK_CONTROL, 0, 2, 0); //키가 올라옴(UP)
 
-#if(1)
+	keybd_event(VK_RETURN, 0, 0, 0); //키가 눌려짐(DOWN)
+	keybd_event(VK_RETURN, 0, 2, 0); //키가 올라옴(UP)
+
+
+
+#if(0)
 	CWnd * hw1 = FindWindow(NULL, "안종필");  // 대화방의 이름이 안종필임.
 	CWnd * hw2 = FindWindowEx(hw1->m_hWnd, 0, "RichEdit20W", NULL); //카톡editbox이름 - 모두 동일함
 	
@@ -765,7 +777,7 @@ void CfileparserudacityDlg::OnBnClickedButtonFileTest3()
 
 
 
-auto CfileparserudacityDlg::ConvertCVMatToBMP(cv::Mat frame)
+HBITMAP CfileparserudacityDlg::ConvertCVMatToBMP(cv::Mat frame)
 {
 	auto convertOpenCVBitDepthToBits = [](const int32_t value)
 	{
@@ -846,7 +858,7 @@ auto CfileparserudacityDlg::ConvertCVMatToBMP(cv::Mat frame)
 	}
 }
 
-auto CfileparserudacityDlg::PasteBMPToClipboard(void * bmp)
+bool CfileparserudacityDlg::PasteBMPToClipboard(void * bmp)
 {
 	assert(bmp != NULL && "You need a bmp for this function to work");
 
